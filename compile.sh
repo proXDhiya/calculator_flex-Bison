@@ -13,3 +13,6 @@ rm y.tab.c y.tab.h lex.yy.c
 
 # run code.out
 ./code.out
+
+# remove code.out
+rm code.out
