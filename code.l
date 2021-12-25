@@ -1,11 +1,14 @@
 %{
     #include "y.tab.h"
+    #include <math.h>
     void yyerror(char *);
 %}
 
 integer         [0-9]
 operator        [-+()*/\n]
 whitespace      [ \t]
+cos             [cos]
+sin             [sin]
 exit            [exit]
 
 %%
@@ -15,6 +18,9 @@ exit            [exit]
 
 {operator}      { return *yytext; }
 
+{cos}           { return COS; }
+
+{sin}           { return SIN; }
 
 {whitespace}+   { ; }
 
