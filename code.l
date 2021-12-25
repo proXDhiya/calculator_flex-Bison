@@ -1,12 +1,12 @@
 %{
-    #include <stdlib.h>
-    void yyerror(char *);
     #include "y.tab.h"
+    void yyerror(char *);
 %}
 
 integer         [0-9]
-operator        [-+*/\n]
+operator        [-+()*/\n]
 whitespace      [ \t]
+exit            [exit]
 
 %%
 
@@ -15,7 +15,11 @@ whitespace      [ \t]
 
 {operator}      { return *yytext; }
 
+
 {whitespace}+   { ; }
+
+{exit}          { printf("caluclator exiting\n");
+                  exit(0); }
 
 .               { yyerror("Invalid Character!"); }
 

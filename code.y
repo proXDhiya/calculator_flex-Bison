@@ -11,18 +11,19 @@
 
 
 program:
-        program expr '\n'   { printf("%d\n", $2); }
-        | 
+        program '\n'                    { printf("= %d\n", $1); }
+        | expr
         ;
 
 expr:
-        INTEGER             { $$ = $1; }
-        | expr '+' expr     { $$ = $1 + $3; }
-        | expr '-' expr     { $$ = $1 - $3; }
-        | expr '*' expr     { $$ = $1 * $3; }
-        | expr '/' expr     { $$ = $1 / $3; }
+        INTEGER                         { $$ = $1; }
+        | expr '+' expr                 { $$ = $1 + $3; }
+        | expr '-' expr                 { $$ = $1 - $3; }
+        | '-' expr                      { $$ = -$2; }
+        | expr '*' expr                 { $$ = $1 * $3; }
+        | expr '/' expr                 { $$ = $1 / $3; }
+        | '(' expr ')'                  { $$ = $2; }
         ;
-
 
 %%
 
