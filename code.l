@@ -1,36 +1,15 @@
 %{
-    #include "y.tab.h"
-    #include <math.h>
-    void yyerror(char *);
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include "y.tab.h"
 %}
 
-integer         [0-9]
-operator        [-+()*/\n]
-whitespace      [ \t]
-cos             [cos]
-sin             [sin]
-exit            [exit]
+%option noyywrap
 
 %%
 
-{integer}+      { yylval = atoi(yytext);
-                  return INTEGER; }
-
-{operator}      { return *yytext; }
-
-{cos}           { return COS; }
-
-{sin}           { return SIN; }
-
-{whitespace}+   { ; }
-
-{exit}          { printf("caluclator exiting\n");
-                  exit(0); }
-
-.               { yyerror("Invalid Character!"); }
-
+[0-9]+					{ yylval.i = atoi(yytext); return NUM; }
+[-+()*/\n]				{ return *yytext; }
+[ \t]					{ ; }
+[exit]					{ printf("EXIT!\n"); exit(1); } 
 %%
-
-int yywrap(void) {
-    return 1;
-}

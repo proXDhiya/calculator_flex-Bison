@@ -1,43 +1,46 @@
 %{
-    #include <stdio.h>
-    #include <math.h>
-    #include <stdlib.h>
-    #define YYSTYPE double
-    int yylex(void);
-    void yyerror(char *);
+	#include <stdio.h>
+	#include <stdlib.h>
+	extern int yylex();
+	void yyerror(char *msg);
 %}
 
-%token INTEGER
-%token COS
-%token SIN
+%union {
+	int i;
+}
 
+%token <i> NUM
+%type <i> E T F
 
 %%
 
+S : E '\n'		{ printf("Result = %d\n", $1); }
+  ;
 
-program:  program '\n'          { printf("= %f\n", $1); }
-          | expr
-          ;
+E : E '+' T		{ $$ = $1 + $3; }
+  | E '-' T		{ $$ = $1 - $3; }
+  | T			{ $$ = $1; }
+  ;
 
-expr:     INTEGER               { $$ = $1; }
-          | expr '+' expr       { $$ = $1 + $3; }
-          | expr '-' expr       { $$ = $1 - $3; }
-          | '-' expr            { $$ = -$2; }
-          | expr '*' expr       { $$ = $1 * $3; }
-          | expr '/' expr       { $$ = $1 / $3; }
-          | '(' expr ')'        { $$ = $2; }
-          | COS expr            { $$ = cos($2); }
-          | SIN expr            { $$ = sin($2); }
-          ;
+T : T '*' F		{ $$ = $1 * $3; }
+  | T '/' F		{ $$ = $1 / $3; }
+  | F			{ $$ = $1; }
+  ;
+
+F : '(' E ')'		{ $$ = $2; }
+  | '-' F		{ $$ = -$2; }
+  | NUM			{ $$ = $1; }
+  ;
 
 %%
 
-
-void yyerror(char *s) {
-    fprintf(stderr, "%s\n", s);
+void yyerror(char *msg) {
+	fprintf(stderr, "%s\n", msg);
+	exit(1);
 }
 
-int main(void) {
-    yyparse();
-    return 0;
+int main() {
+	yyparse();
+	return 0;
 }
+
