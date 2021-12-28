@@ -1,8 +1,8 @@
 # compile code.y from bison to c
-yacc -d code.y
+bison -d -y code.y
 
 # compile code.l from flex to c
-lex code.l
+flex code.l
 
 # compile code.tab.c code.tab.h lex.yy.c to binary file
 gcc lex.yy.c y.tab.c -o calc.out -lm

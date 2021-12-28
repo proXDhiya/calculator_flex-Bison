@@ -2,53 +2,57 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <math.h>
-	extern int yylex();
-	void yyerror(char *msg);
+	#define YYSTYPE double
+	int yylex(void);
+	void yyerror(char*);
 %}
 
-%union {
-	float f;
-}
-
-%token <f> NUM COS SIN SQRT PI
-%type <f> E T F A
-
-%%
-
-S : E '\n'		{ printf("Result = %2.f\n", $1); }
-  ;
-
-E : E '+' T		{ $$ = $1 + $3; }
-  | E '-' T		{ $$ = $1 - $3; }
-  | T			{ $$ = $1; }
-  ;
-
-T : T '*' F		{ $$ = $1 * $3; }
-  | T '/' F		{ $$ = $1 / $3; }
-  | F			{ $$ = $1; }
-  ;
-
-F : COS '(' A ')'	{ $$ = cos($3); }
-  | SIN '(' A ')'	{ $$ = sin($3); }
-  | SQRT '(' A ')'	{ $$ = sqrt($3); }
-  | A			{ $$ = $1; }
-  ;
-
-A : '(' E ')'		{ $$ = $2; }
-  | '-' A		{ $$ = -$2; }
-  | NUM			{ $$ = $1; }
-  | PI			{ $$ = 3.14; }
-  ;
+%token FLOAT INT
+%token EOL
+%token PRNL PRNR
+%token ABS SIN COS SQRT EXP
+%token EXIT
+%left ADD SUB
+%left MUL DIV
 
 %%
 
-void yyerror(char *msg) {
-	fprintf(stderr, "%s\n", msg);
-	exit(1);
+strt: strt expr EOL		{ printf("= lf\n", $2); }
+	| strt EOL		{ printf("\n"); }
+	| strt EXIT		{ printf(">> Bye!\n"); exit(0); }
+	|
+;
+
+expr: expr ADD term		{ $$ = $1 + $3; }
+	| expr SUB term		{ $$ = $1 - $3; }
+	| term			{ $$ = $1; }
+;
+
+term: term MUL unary		{ $$ = $1 * $3; }
+	| term DIV unary	{ $$ = $1 / $3; }
+	| unary			{ $$ = $1; }
+;
+
+unary: SUB unary		{ $$ = $2 * -1; }
+	| factor		{ $$ = $1; }
+;
+
+factor: INT			{ $$ = $1; }
+	| FLOAT			{ $$ = $1; }
+	| PRNL expr PRNR	{ $$ = ($2); }
+	| SIN PRNL expr PRNR	{ $$ = sin($3); }
+	| COS PRNL expr PRNR	{ $$ = cos($3); }
+	| SQRT PRNL expr PRNR	{ $$ = sqrt($3); }
+	| ABS PRNL expr PRNR	{ $$ = fabs($3); }
+	| EXP PRNL expr PRNR	{ $$ = exp($3); }
+;
+
+%%
+void yyerror(char *s) {
+	fprintf(stderr, ">> %s\n", s);
 }
 
 int main() {
 	yyparse();
 	return 0;
 }
-
