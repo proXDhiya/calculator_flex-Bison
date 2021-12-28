@@ -1,20 +1,21 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <math.h>
 	extern int yylex();
 	void yyerror(char *msg);
 %}
 
 %union {
-	int i;
+	float f;
 }
 
-%token <i> NUM
-%type <i> E T F
+%token <f> NUM COS SIN SQRT PI
+%type <f> E T F A
 
 %%
 
-S : E '\n'		{ printf("Result = %d\n", $1); }
+S : E '\n'		{ printf("Result = %2.f\n", $1); }
   ;
 
 E : E '+' T		{ $$ = $1 + $3; }
@@ -27,9 +28,16 @@ T : T '*' F		{ $$ = $1 * $3; }
   | F			{ $$ = $1; }
   ;
 
-F : '(' E ')'		{ $$ = $2; }
-  | '-' F		{ $$ = -$2; }
+F : COS '(' A ')'	{ $$ = cos($3); }
+  | SIN '(' A ')'	{ $$ = sin($3); }
+  | SQRT '(' A ')'	{ $$ = sqrt($3); }
+  | A			{ $$ = $1; }
+  ;
+
+A : '(' E ')'		{ $$ = $2; }
+  | '-' A		{ $$ = -$2; }
   | NUM			{ $$ = $1; }
+  | PI			{ $$ = 3.14; }
   ;
 
 %%

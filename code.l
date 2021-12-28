@@ -8,8 +8,13 @@
 
 %%
 
-[0-9]+					{ yylval.i = atoi(yytext); return NUM; }
+[0-9]+(.[0-9]+)?([eE][0-9]+)?		{ yylval.f = atoi(yytext); return NUM; }
+[cos]					{ return COS; }
+[sin]					{ return SIN; }
+[sqrt]					{ return SQRT; }
+[pi]					{ return PI; }
 [-+()*/\n]				{ return *yytext; }
 [ \t]					{ ; }
 [exit]					{ printf("EXIT!\n"); exit(1); } 
+
 %%
