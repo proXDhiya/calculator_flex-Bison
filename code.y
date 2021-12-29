@@ -7,19 +7,20 @@
 	void yyerror(char*);
 %}
 
-%token FLOAT INT
+%token INT
 %token EOL
 %token PRNL PRNR
-%token ABS SIN COS SQRT EXP
-%token EXIT
+%token ABS SIN COS SQRT EXP POW PI
+%token EXIT CLEAR
 %left ADD SUB
 %left MUL DIV
 
 %%
 
-strt: strt expr EOL		{ printf("= lf\n", $2); }
+strt: strt expr EOL		{ printf("= %.2lf\n", $2); }
 	| strt EOL		{ printf("\n"); }
 	| strt EXIT		{ printf(">> Bye!\n"); exit(0); }
+	| strt CLEAR		{ system("clear"); }
 	|
 ;
 
@@ -33,12 +34,13 @@ term: term MUL unary		{ $$ = $1 * $3; }
 	| unary			{ $$ = $1; }
 ;
 
-unary: SUB unary		{ $$ = $2 * -1; }
+unary: SUB expr			{ $$ = $2 * -1; }
 	| factor		{ $$ = $1; }
 ;
 
 factor: INT			{ $$ = $1; }
-	| FLOAT			{ $$ = $1; }
+	| PI			{ $$ = 3.14; }
+	| expr POW expr		{ $$ = pow($1, $3); }
 	| PRNL expr PRNR	{ $$ = ($2); }
 	| SIN PRNL expr PRNR	{ $$ = sin($3); }
 	| COS PRNL expr PRNR	{ $$ = cos($3); }
@@ -53,6 +55,7 @@ void yyerror(char *s) {
 }
 
 int main() {
+	system("clear");
 	yyparse();
 	return 0;
 }
