@@ -17,31 +17,31 @@
 
 %%
 
-strt: strt expr EOL		{ printf("= %.2lf\n", $2); }
-	| strt EOL		{ printf("\n"); }
-	| strt EXIT		{ printf(">> Bye!\n"); exit(0); }
-	| strt CLEAR		{ system("clear"); }
+strt: strt expr EOL			{ printf("= %.2lf\n", $2); }
+	| strt EOL				{ printf("\n"); }
+	| strt EXIT				{ printf(">> Bye!\n"); exit(0); }
+	| strt CLEAR			{ system("clear"); }
 	|
 ;
 
-expr: expr ADD term		{ $$ = $1 + $3; }
-	| expr SUB term		{ $$ = $1 - $3; }
-	| term			{ $$ = $1; }
+expr: expr ADD term			{ $$ = $1 + $3; }
+	| expr SUB term			{ $$ = $1 - $3; }
+	| term					{ $$ = $1; }
 ;
 
 term: term MUL unary		{ $$ = $1 * $3; }
-	| term DIV unary	{ $$ = $1 / $3; }
-	| unary			{ $$ = $1; }
+	| term DIV unary		{ $$ = $1 / $3; }
+	| unary					{ $$ = $1; }
 ;
 
-unary: SUB expr			{ $$ = $2 * -1; }
-	| factor		{ $$ = $1; }
+unary: SUB expr				{ $$ = $2 * -1; }
+	| factor				{ $$ = $1; }
 ;
 
-factor: INT			{ $$ = $1; }
-	| PI			{ $$ = 3.14; }
-	| expr POW expr		{ $$ = pow($1, $3); }
-	| PRNL expr PRNR	{ $$ = ($2); }
+factor: INT					{ $$ = $1; }
+	| PI					{ $$ = 3.14; }
+	| expr POW expr			{ $$ = pow($1, $3); }
+	| PRNL expr PRNR		{ $$ = ($2); }
 	| SIN PRNL expr PRNR	{ $$ = sin($3); }
 	| COS PRNL expr PRNR	{ $$ = cos($3); }
 	| SQRT PRNL expr PRNR	{ $$ = sqrt($3); }
