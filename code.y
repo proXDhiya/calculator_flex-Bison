@@ -1,6 +1,7 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <string.h>
 	#include <math.h>
 	#define YYSTYPE double
 	int yylex(void);
@@ -11,7 +12,7 @@
 %token EOL
 %token PRNL PRNR
 %token ABS SIN COS SQRT EXP POW PI
-%token EXIT CLEAR
+%token EXIT CLEAR HELP
 %left ADD SUB
 %left MUL DIV
 
@@ -21,6 +22,7 @@ strt: strt expr EOL			{ printf("= %.2lf\n", $2); }
 	| strt EOL				{ printf("\n"); }
 	| strt EXIT				{ printf(">> Bye!\n"); exit(0); }
 	| strt CLEAR			{ system("clear"); }
+	| strt HELP				{ system("clear"); char ch; FILE* ptr; ptr = fopen("help.txt", "r"); while((ch = fgetc(ptr)) != EOF) printf("%c", ch); fclose(ptr); }
 	|
 ;
 

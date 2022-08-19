@@ -24,6 +24,7 @@
 "abs"	{ printf("ABS "); return ABS; }
 "pi"	{ printf("PI "); return PI; }
 "clear"	{ return CLEAR; }
+"help"	{ return HELP; }
 [0-9]+	{ printf("INT "); sscanf(yytext, "%lf", &yylval); return INT; }
 \n		{ return EOL; }
 [ \t]+  { ; }

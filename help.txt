@@ -1,0 +1,6 @@
+Flex/Bison Calculator - Execute simple math operation
+
+usage: [NUM] + ([NUM] * [NUM])
+usage: cos([NUM]) + sin(pi)
+usage: pi
+usage: [COMMEND]
